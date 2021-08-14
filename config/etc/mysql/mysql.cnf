@@ -19,3 +19,11 @@
 
 !includedir /etc/mysql/conf.d/
 !includedir /etc/mysql/mysql.conf.d/
+
+[mysqld]
+query_cache_limit = 16M
+query_cache_size = 512M
+query_cache_type = 1
+
+innodb_buffer_pool_size = 1G
+innodb_log_file_size = 256M
