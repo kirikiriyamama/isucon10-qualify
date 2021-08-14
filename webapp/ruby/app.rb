@@ -280,7 +280,7 @@ class App < Sinatra::Base
         halt 400
       end
 
-    chair = db_chair.xquery('SELECT * FROM chair WHERE id = ?', id).first
+    chair = db_chair.xquery('SELECT * FROM chair WHERE id = ? LIMIT 1', id).first
     unless chair
       logger.info "Requested id's chair not found: #{id}"
       halt 404
@@ -493,7 +493,7 @@ class App < Sinatra::Base
         halt 400
       end
 
-    estate = db_estate.xquery('SELECT * FROM estate WHERE id = ?', id).first
+    estate = db_estate.xquery('SELECT * FROM estate WHERE id = ? LIMIT 1', id).first
     unless estate
       logger.info "Requested id's estate not found: #{id}"
       halt 404
