@@ -350,15 +350,6 @@ class App < Sinatra::Base
     search_queries = []
     query_params = []
 
-    # door_height_cond = false
-    # door_height_query = []
-
-    # door_width_cond = false
-    # door_width_query = []
-
-    # rent_cond = false
-    # rent_query = []
-
     if params[:doorHeightRangeId] && params[:doorHeightRangeId].size > 0
       door_height = ESTATE_SEARCH_CONDITION[:doorHeight][:ranges][params[:doorHeightRangeId].to_i]
       unless door_height
@@ -369,15 +360,11 @@ class App < Sinatra::Base
       if door_height[:min] != -1
         search_queries << 'door_height >= ?'
         query_params << door_height[:min]
-        # door_height_query << door_height[:min]
-        # door_height_cond = true
       end
 
       if door_height[:max] != -1
         search_queries << 'door_height < ?'
         query_params << door_height[:max]
-        # door_height_query << door_height[:max]
-        # door_height_cond = true
       end
     end
 
@@ -391,15 +378,11 @@ class App < Sinatra::Base
       if door_width[:min] != -1
         search_queries << 'door_width >= ?'
         query_params << door_width[:min]
-        # door_width_cond << door_width[:min]
-        # door_width_cond = true
       end
 
       if door_width[:max] != -1
         search_queries << 'door_width < ?'
         query_params << door_width[:max]
-        # door_width_cond << door_width[:max]
-        # door_width_cond = true
       end
     end
 
@@ -413,15 +396,11 @@ class App < Sinatra::Base
       if rent[:min] != -1
         search_queries << 'rent >= ?'
         query_params << rent[:min]
-        # rent_query << rent[:min]
-        # rent_cond = true
       end
 
       if rent[:max] != -1
         search_queries << 'rent < ?'
         query_params << rent[:max]
-        # rent_query << rent[:max]
-        # rent_cond = true
       end
     end
 
@@ -455,19 +434,15 @@ class App < Sinatra::Base
 
     sqlprefix = 'SELECT * FROM estate WHERE '
     search_condition = search_queries.join(' AND ')
-    limit_offset = " ORDER BY desc_popularity ASC, id ASC LIMIT #{per_page} OFFSET #{per_page * page}" # XXX:
+    limit_offset = " ORDER BY desc_popularity ASC, id ASC" # XXX:
     count_prefix = 'SELECT COUNT(*) as count FROM estate WHERE '
 
-    # door_height_sql = door_height_cond ? "SELECT * FROM estate WHERE #{door_height_query.join(' AND ')}" : nil
-    # door_width_sql = door_width_cond ? "SELECT * FROM estate WHERE #{door_width_query.join(' AND ')}" : nil
-    # rent_sql = rent_cond ? "SELECT * FROM estate WHERE #{rent_query.join(' AND ')}" : nil
-    # union_sql = [door_height_sql, door_width_sql, rent_sql].compact.join("\nUNION\n")
-
-    # binding.pry
     count = db_estate.xquery("#{count_prefix}#{search_condition}", query_params).first[:count]
     estates = db_estate.xquery("#{sqlprefix}#{search_condition}#{limit_offset}", query_params).to_a
 
-    { count: count, estates: estates.map { |e| camelize_keys_for_estate(e) } }.to_json
+    start = page * per_page
+    final = start + per_page
+    { count: estates.length, estates: estates.map { |e| camelize_keys_for_estate(e) }[start..final] }.to_json
   end
 
   post '/api/estate/nazotte' do
