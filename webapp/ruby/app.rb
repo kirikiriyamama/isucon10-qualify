@@ -344,6 +344,8 @@ class App < Sinatra::Base
       db_chair.xquery('UPDATE chair SET stock = stock - 1 WHERE id = ?', id)
     end
 
+    chair_cache[id] = db_chair.xquery('SELECT * FROM chair WHERE id = ? LIMIT 1', id).first
+
     status 200
   end
 
