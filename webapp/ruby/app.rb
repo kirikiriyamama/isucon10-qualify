@@ -155,15 +155,17 @@ class App < Sinatra::Base
         halt 400
       end
 
-      if chair_price[:min] != -1
-        search_queries << 'price >= ?'
-        query_params << chair_price[:min]
+      if chair_price[:min] || chair_price[:max] != -1
+        search_queries << 'price_range = ?'
+        query_params << chair_price[:id]
       end
 
-      if chair_price[:max] != -1
-        search_queries << 'price < ?'
-        query_params << chair_price[:max]
-      end
+      # if chair_price[:max] != -1
+      #   search_queries << 'price < ?'
+      #   query_params << chair_price[:max]
+      # end
+
+      # binding.irb
     end
 
     if params[:heightRangeId] && params[:heightRangeId].size > 0
