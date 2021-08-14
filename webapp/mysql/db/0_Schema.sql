@@ -39,6 +39,14 @@ CREATE TABLE isuumo.chair
     kind        VARCHAR(64)     NOT NULL,
     popularity  INTEGER         NOT NULL,
     stock       INTEGER         NOT NULL,
+    price_range INTEGER GENERATED ALWAYS AS (
+        CASE WHEN price < 3000 THEN 0
+        WHEN price >= 3000 AND price < 6000 THEN 1
+        WHEN price >= 6000 AND price < 9000 THEN 2
+        WHEN price >= 9000 AND price < 12000 THEN 3
+        WHEN price >= 12000 AND price < 15000 THEN 4
+        WHEN price >= 15000 THEN 5
+        END) VIRTUAL,
     desc_popularity INTEGER GENERATED ALWAYS AS (chair.popularity * (-1)) VIRTUAL,
     INDEX desc_popularity_and_id_index(desc_popularity, id),
     INDEX price_index(price)
