@@ -3,6 +3,12 @@ require 'mysql2'
 require 'mysql2-cs-bind'
 require 'csv'
 
+env = ENV.fetch('RACK_ENV', 'development')
+
+if env == 'development'
+  require 'pry'
+end
+
 class App < Sinatra::Base
   LIMIT = 20
   NAZOTTE_LIMIT = 50
@@ -11,7 +17,9 @@ class App < Sinatra::Base
 
   configure :development do
     require 'sinatra/reloader'
+    require 'rack-lineprof'
     register Sinatra::Reloader
+    use Rack::Lineprof
   end
 
   configure do
@@ -102,6 +110,7 @@ class App < Sinatra::Base
       estate_hash.tap do |e|
         e[:doorHeight] = e.delete(:door_height)
         e[:doorWidth] = e.delete(:door_width)
+        e.delete(:location)
       end
     end
 
@@ -460,21 +469,15 @@ class App < Sinatra::Base
       },
     }
 
-    sql = 'SELECT * FROM estate WHERE latitude <= ? AND latitude >= ? AND longitude <= ? AND longitude >= ? ORDER BY desc_popularity ASC, id ASC'
-    estates = db_estate.xquery(sql, bounding_box[:bottom_right][:latitude], bounding_box[:top_left][:latitude], bounding_box[:bottom_right][:longitude], bounding_box[:top_left][:longitude])
+    # sql = 'SELECT id FROM estate WHERE latitude <= ? AND latitude >= ? AND longitude <= ? AND longitude >= ? ORDER BY desc_popularity ASC, id ASC'
+    # estates = db_estate.xquery(sql, bounding_box[:bottom_right][:latitude], bounding_box[:top_left][:latitude], bounding_box[:bottom_right][:longitude], bounding_box[:top_left][:longitude])
 
     estates_in_polygon = []
-    estates.each do |estate|
-      point = "'POINT(%f %f)'" % estate.values_at(:latitude, :longitude)
-      coordinates_to_text = "'POLYGON((%s))'" % coordinates.map { |c| '%f %f' % c.values_at(:latitude, :longitude) }.join(',')
-      sql = 'SELECT * FROM estate WHERE id = ? AND ST_Contains(ST_PolygonFromText(%s), ST_GeomFromText(%s))' % [coordinates_to_text, point]
-      e = db_estate.xquery(sql, estate[:id]).first
-      if e
-        estates_in_polygon << e
-      end
-    end
+    coordinates_to_text = "'POLYGON((%s))'" % coordinates.map { |c| '%f %f' % c.values_at(:latitude, :longitude) }.join(',')
+    sql2 = "SELECT * FROM estate WHERE ST_Contains(ST_PolygonFromText(#{coordinates_to_text}), `location`) ORDER BY desc_popularity ASC, id ASC"
+    area_estates = db_estate.xquery(sql2)
 
-    nazotte_estates = estates_in_polygon.take(NAZOTTE_LIMIT)
+    nazotte_estates = area_estates.first(NAZOTTE_LIMIT)
     {
       estates: nazotte_estates.map { |e| camelize_keys_for_estate(e) },
       count: nazotte_estates.size,
