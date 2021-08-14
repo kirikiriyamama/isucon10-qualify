@@ -18,7 +18,8 @@ CREATE TABLE isuumo.estate
     door_width  INTEGER             NOT NULL,
     features    VARCHAR(64)         NOT NULL,
     popularity  INTEGER             NOT NULL,
-    desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL
+    desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL,
+    INDEX desc_popularity_and_id_index(desc_popularity, id)
 );
 
 CREATE TABLE isuumo.chair
@@ -36,5 +37,6 @@ CREATE TABLE isuumo.chair
     kind        VARCHAR(64)     NOT NULL,
     popularity  INTEGER         NOT NULL,
     stock       INTEGER         NOT NULL,
-    desc_popularity INTEGER GENERATED ALWAYS AS (chair.popularity * (-1)) VIRTUAL
+    desc_popularity INTEGER GENERATED ALWAYS AS (chair.popularity * (-1)) VIRTUAL,
+    INDEX desc_popularity_and_id_index(desc_popularity, id)
 );
