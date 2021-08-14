@@ -15,6 +15,9 @@ class App < Sinatra::Base
   CHAIR_SEARCH_CONDITION = JSON.parse(File.read('../fixture/chair_condition.json'), symbolize_names: true)
   ESTATE_SEARCH_CONDITION = JSON.parse(File.read('../fixture/estate_condition.json'), symbolize_names: true)
 
+  estate_cache = {}
+  chair_cache = {}
+
   configure :development do
     require 'sinatra/reloader'
     require 'rack-lineprof'
@@ -280,11 +283,19 @@ class App < Sinatra::Base
         halt 400
       end
 
-    chair = db_chair.xquery('SELECT * FROM chair WHERE id = ? LIMIT 1', id).first
+    chair = if chair_cache[id]
+      chair_cache[id]
+    else
+      db_chair.xquery('SELECT * FROM chair WHERE id = ? LIMIT 1', id).first
+    end
+
+    # chair = db_chair.xquery('SELECT * FROM chair WHERE id = ? LIMIT 1', id).first
     unless chair
       logger.info "Requested id's chair not found: #{id}"
       halt 404
     end
+
+    chair_cache[id] = chair
 
     if chair[:stock] <= 0
       logger.info "Requested id's chair is sold out: #{id}"
@@ -493,11 +504,18 @@ class App < Sinatra::Base
         halt 400
       end
 
-    estate = db_estate.xquery('SELECT * FROM estate WHERE id = ? LIMIT 1', id).first
+    estate = if estate_cache[id]
+      estate_cache[id]
+    else
+      db_estate.xquery('SELECT * FROM estate WHERE id = ? LIMIT 1', id).first
+    end
+
     unless estate
       logger.info "Requested id's estate not found: #{id}"
       halt 404
     end
+
+    estate_cache[id] = estate
 
     camelize_keys_for_estate(estate).to_json
   end
