@@ -445,14 +445,15 @@ class App < Sinatra::Base
       },
     }
 
-    # sql = 'SELECT * FROM estate WHERE latitude <= ? AND latitude >= ? AND longitude <= ? AND longitude >= ? ORDER BY popularity DESC, id ASC'
+    sql = 'SELECT id FROM estate WHERE latitude <= ? AND latitude >= ? AND longitude <= ? AND longitude >= ? ORDER BY popularity DESC, id ASC'
+    estates = db.xquery(sql, bounding_box[:bottom_right][:latitude], bounding_box[:top_left][:latitude], bounding_box[:bottom_right][:longitude], bounding_box[:top_left][:longitude])
 
     estates_in_polygon = []
     coordinates_to_text = "'POLYGON((%s))'" % coordinates.map { |c| '%f %f' % c.values_at(:latitude, :longitude) }.join(',')
-    sql = "SELECT * FROM estate WHERE ST_Contains(ST_PolygonFromText(#{coordinates_to_text}), POINT(latitude, longitude)) ORDER BY popularity DESC, id ASC"
-    estates = db.xquery(sql)
+    sql2 = "SELECT * FROM estate WHERE id IN (?) AND ST_Contains(ST_PolygonFromText(#{coordinates_to_text}), POINT(latitude, longitude)) ORDER BY popularity DESC, id ASC"
+    area_estates = db.xquery(sql2, estates.map {|e| e[:id]}.join(','))
 
-    nazotte_estates = estates.first(NAZOTTE_LIMIT)
+    nazotte_estates = area_estates.first(NAZOTTE_LIMIT)
     {
       estates: nazotte_estates.map { |e| camelize_keys_for_estate(e) },
       count: nazotte_estates.size,
