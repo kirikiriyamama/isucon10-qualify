@@ -442,7 +442,7 @@ class App < Sinatra::Base
 
     start = page * per_page
     final = start + per_page
-    { count: estates.length, estates: estates.map { |e| camelize_keys_for_estate(e) }[start..final] }.to_json
+    { count: estates.length, estates: estates.map { |e| camelize_keys_for_estate(e) }[start...final] }.to_json
   end
 
   post '/api/estate/nazotte' do
