@@ -19,6 +19,7 @@ CREATE TABLE isuumo.estate
     features    VARCHAR(64)         NOT NULL,
     popularity  INTEGER             NOT NULL,
     desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL,
+    INDEX desc_popularity_and_id_index(desc_popularity, id),
     INDEX idx_lat_lon(latitude, longitude),
     `location` POINT AS (POINT(latitude, longitude))
 );
@@ -38,5 +39,6 @@ CREATE TABLE isuumo.chair
     kind        VARCHAR(64)     NOT NULL,
     popularity  INTEGER         NOT NULL,
     stock       INTEGER         NOT NULL,
-    desc_popularity INTEGER GENERATED ALWAYS AS (chair.popularity * (-1)) VIRTUAL
+    desc_popularity INTEGER GENERATED ALWAYS AS (chair.popularity * (-1)) VIRTUAL,
+    INDEX desc_popularity_and_id_index(desc_popularity, id)
 );
