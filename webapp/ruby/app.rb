@@ -535,6 +535,8 @@ class App < Sinatra::Base
       end
     end
 
+    estate_cache = {}
+
     status 201
   end
 
