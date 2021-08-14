@@ -1,0 +1,5 @@
+#!/bin/bash
+set -o errexit -o pipefail -o xtrace
+
+repo=/home/isucon/isucon10-qualify
+find ${repo}/config/ -type f -printf '%P\n' | xargs -t -n1 -I{} sudo ln -sf ${repo}/config/{} /{}

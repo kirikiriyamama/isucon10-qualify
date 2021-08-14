@@ -15,6 +15,8 @@ bundle install
 sudo truncate -s 0 -c /var/log/nginx/access.log
 sudo truncate -s 0 -c /var/log/mysql/slow.log
 
+${repo}/bin/mklink
+
 sudo systemctl daemon-reload
 sudo systemctl restart mysql.service
 sudo systemctl restart nginx.service
