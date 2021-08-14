@@ -97,7 +97,6 @@ class App < Sinatra::Base
       estate_hash.tap do |e|
         e[:doorHeight] = e.delete(:door_height)
         e[:doorWidth] = e.delete(:door_width)
-        e.delete(:location)
       end
     end
 
@@ -459,7 +458,7 @@ class App < Sinatra::Base
 
     estates_in_polygon = []
     coordinates_to_text = "'POLYGON((%s))'" % coordinates.map { |c| '%f %f' % c.values_at(:latitude, :longitude) }.join(',')
-    sql2 = "SELECT * FROM estate WHERE id IN (?) AND ST_Contains(ST_PolygonFromText(#{coordinates_to_text}), `location`) ORDER BY desc_popularity ASC, id ASC"
+    sql2 = "SELECT * FROM estate WHERE id IN (?) AND ST_Contains(ST_PolygonFromText(#{coordinates_to_text}), POINT(latitude, longitude)) ORDER BY desc_popularity ASC, id ASC"
     area_estates = db.xquery(sql2, estates.map {|e| e[:id]}.join(','))
 
     nazotte_estates = area_estates.first(NAZOTTE_LIMIT)
