@@ -2,9 +2,9 @@
 Description=isuumo.ruby
 
 [Service]
-WorkingDirectory=/home/isucon/isuumo/webapp/ruby
+WorkingDirectory=/home/isucon/isucon10-qualify/webapp/ruby
 EnvironmentFile=/home/isucon/env.sh
-PIDFile=/home/isucon/isuumo/webapp/ruby/server.pid
+PIDFile=/home/isucon/isuumo/isucon10-qualify/webapp/ruby/server.pid
 
 User=isucon
 Group=isucon
