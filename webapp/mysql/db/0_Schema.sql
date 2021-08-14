@@ -19,8 +19,6 @@ CREATE TABLE isuumo.estate
     features    VARCHAR(64)         NOT NULL,
     popularity  INTEGER             NOT NULL,
     desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL,
-    INDEX idx_lat(latitude),
-    INDEX idx_lon(longitude),
     INDEX idx_lat_lon(latitude, longitude),
     `location` POINT AS (POINT(latitude, longitude))
 );
