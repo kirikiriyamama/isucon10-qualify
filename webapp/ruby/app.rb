@@ -437,7 +437,7 @@ class App < Sinatra::Base
     limit_offset = " ORDER BY desc_popularity ASC, id ASC" # XXX:
     count_prefix = 'SELECT COUNT(*) as count FROM estate WHERE '
 
-    count = db_estate.xquery("#{count_prefix}#{search_condition}", query_params).first[:count]
+    # count = db_estate.xquery("#{count_prefix}#{search_condition}", query_params).first[:count]
     estates = db_estate.xquery("#{sqlprefix}#{search_condition}#{limit_offset}", query_params).to_a
 
     start = page * per_page
