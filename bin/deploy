@@ -6,7 +6,7 @@ repo=/home/isucon/isucon10-qualify
 cd ${repo}
 git reset --hard HEAD
 git fetch -p
-git switch --detach origin/${1:-master}
+git checkout origin/${1:-master}
 
 cd ${repo}/webapp/ruby
 bundle config set --local without 'development'
