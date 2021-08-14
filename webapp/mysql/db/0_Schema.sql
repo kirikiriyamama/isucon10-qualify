@@ -18,8 +18,8 @@ CREATE TABLE isuumo.estate
     door_width  INTEGER             NOT NULL,
     features    VARCHAR(64)         NOT NULL,
     popularity  INTEGER             NOT NULL,
-    desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL,
-    INDEX idx_lat_lon(latitude, longitude)
+    desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL
+    -- INDEX idx_lat_lon(latitude, longitude)
 );
 
 CREATE TABLE isuumo.chair
