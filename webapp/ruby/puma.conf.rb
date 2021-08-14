@@ -1,2 +1,2 @@
-bind "tcp://0.0.0.0:#{ENV.fetch('SERVER_PORT', 1323)}"
+bind "unix:///tmp/puma.sock"
 environment 'production'
