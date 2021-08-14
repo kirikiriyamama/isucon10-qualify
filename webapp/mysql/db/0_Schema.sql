@@ -17,7 +17,8 @@ CREATE TABLE isuumo.estate
     door_height INTEGER             NOT NULL,
     door_width  INTEGER             NOT NULL,
     features    VARCHAR(64)         NOT NULL,
-    popularity  INTEGER             NOT NULL
+    popularity  INTEGER             NOT NULL,
+    desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL
 );
 
 CREATE TABLE isuumo.chair
