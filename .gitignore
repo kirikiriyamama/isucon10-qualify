@@ -1,1 +1,4 @@
 dump.sql
+
+/webapp/frontend/.next/
+/webapp/frontend/node_modules/
