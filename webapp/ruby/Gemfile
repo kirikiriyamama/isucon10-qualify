@@ -7,3 +7,8 @@ gem "sinatra-contrib"
 gem "mysql2"
 gem "mysql2-cs-bind"
 gem "unicorn"
+
+group :development do
+  gem 'pry'
+  gem 'rack-lineprof'
+end
