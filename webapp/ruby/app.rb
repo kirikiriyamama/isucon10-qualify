@@ -3,6 +3,12 @@ require 'mysql2'
 require 'mysql2-cs-bind'
 require 'csv'
 
+env = ENV.fetch('RACK_ENV', 'development')
+
+if env == 'development'
+  require 'pry'
+end
+
 class App < Sinatra::Base
   LIMIT = 20
   NAZOTTE_LIMIT = 50
@@ -11,7 +17,9 @@ class App < Sinatra::Base
 
   configure :development do
     require 'sinatra/reloader'
+    require 'rack-lineprof'
     register Sinatra::Reloader
+    use Rack::Lineprof
   end
 
   configure do
