@@ -21,9 +21,7 @@ CREATE TABLE isuumo.estate
     desc_popularity INTEGER GENERATED ALWAYS AS (estate.popularity * (-1)) VIRTUAL,
     INDEX desc_popularity_and_id_index(desc_popularity, id),
     INDEX idx_lat_lon(latitude, longitude),
-    INDEX idx_d_h(door_height),
-    INDEX idx_d_w(door_width),
-    INDEX idx_rent(rent),
+    INDEX idx_search_cond(door_height, door_width, rent),
     `location` POINT AS (POINT(latitude, longitude))
 );
 
