@@ -110,6 +110,7 @@ class App < Sinatra::Base
       estate_hash.tap do |e|
         e[:doorHeight] = e.delete(:door_height)
         e[:doorWidth] = e.delete(:door_width)
+        e.delete(:location)
       end
     end
 
