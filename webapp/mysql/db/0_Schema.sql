@@ -20,7 +20,8 @@ CREATE TABLE isuumo.estate
     popularity  INTEGER             NOT NULL,
     INDEX idx_lat(latitude),
     INDEX idx_lon(longitude),
-    INDEX idx_lat_lon_pop(latitude, longitude, popularity)
+    INDEX idx_lat_lon_pop(latitude, longitude),
+    `location` POINT AS (POINT(latitude, longitude))
 );
 
 CREATE TABLE isuumo.chair
